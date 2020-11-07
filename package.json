@@ -1,10 +1,31 @@
 {
   "name": "expo-file-dl",
   "version": "1.0.0",
-  "description": "A library to download files to a specified folder and notify the user while the download is happening and when the download finishes",
+  "description": "Download files to a specified folder and notify the user while the download is happening and when the download finishes",
+  "keywords": [
+    "expo",
+    "expo-notifications",
+    "expo-file-downloader",
+    "file-downloader",
+    "react-native",
+    "react-native-file-download"
+  ],
+  "homepage": "https://github.com/kathawala/expo-file-dl",
+  "bugs": {
+    "url": "https://github.com/kathawala/expo-file-dl/issues",
+    "email": "farhansayshi@gmail.com"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "author": "Farhan Kathawala <farhan.kathawala@gmail.com>",
+  "funding": {
+    "type": "individual",
+    "url": "https://liberapay.com/kathawala/donate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kathawala/expo-file-dl"
+  },
+  "author": "Farhan Kathawala <farhansayshi@gmail.com>",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
