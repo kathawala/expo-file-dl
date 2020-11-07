@@ -1,0 +1,29 @@
+{
+  "name": "expo-file-dl",
+  "version": "1.0.0",
+  "description": "A library to download files to a specified folder and notify the user while the download is happening and when the download finishes",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "Farhan Kathawala <farhan.kathawala@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "expo": "~39.0.2",
+    "expo-file-system": "^9.2.0",
+    "expo-media-library": "^9.2.1",
+    "expo-notifications": "^0.7.2",
+    "@unimodules/core": "^5.5.1",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.4.tar.gz",
+    "react-native-web": "~0.13.12"
+  },
+  "peerDependencies": {
+  },
+  "devDependencies": {
+    "typescript": "^4.0.5"
+  }
+}
