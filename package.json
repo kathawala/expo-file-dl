@@ -1,6 +1,6 @@
 {
   "name": "expo-file-dl",
-  "version": "1.0.0",
+  "version": "1.0.0-bare",
   "description": "Download files to a specified folder and notify the user while the download is happening and when the download finishes",
   "keywords": [
     "expo",
@@ -10,7 +10,7 @@
     "react-native",
     "react-native-file-download"
   ],
-  "homepage": "https://github.com/kathawala/expo-file-dl",
+  "homepage": "https://github.com/kathawala/expo-file-dl/tree/bare",
   "bugs": {
     "url": "https://github.com/kathawala/expo-file-dl/issues",
     "email": "farhansayshi@gmail.com"
@@ -27,22 +27,17 @@
   },
   "author": "Farhan Kathawala <farhansayshi@gmail.com>",
   "license": "MIT",
-  "scripts": {
-    "build": "tsc",
-    "prepare": "npm run build"
-  },
   "dependencies": {
-    "expo": "~39.0.2",
-    "expo-file-system": "^9.2.0",
-    "expo-media-library": "^9.2.1",
-    "expo-notifications": "^0.7.2",
-    "@unimodules/core": "^5.5.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.4.tar.gz",
     "react-native-web": "~0.13.12"
   },
   "peerDependencies": {
+    "expo-file-system": "^9.2.0",
+    "expo-media-library": "^9.2.1",
+    "expo-notifications": "^0.7.2",
+    "react-native-unimodules": "^0.11.0"
   },
   "devDependencies": {
     "typescript": "^4.0.5"
