@@ -58,22 +58,28 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
 # Installation
 [(Back to top)](#table-of-contents)
 
+## Managed Expo project
+
+Just run
+
 ```
 yarn add expo-file-dl
 ```
 
-If you are using the "bare workflow" of Expo, you'll need to run
+## Bare Expo project or plain React-Native project
 
-```
-yarn add expo-file-dl@bare
-```
-
-and install the following libraries in your project (follow the "Installation in bare React Native projects" instructions for each)
+First, install the following libraries in your project (follow the "Installation in bare React Native projects" instructions for each)
 
 * `expo-file-system`
 * `expo-media-library`
 * `expo-notifications`
 * `react-native-unimodules`
+
+then run
+
+```
+yarn add expo-file-dl@bare
+```
 
 # Usage
 [(Back to top)](#table-of-contents)
