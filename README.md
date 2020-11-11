@@ -6,6 +6,9 @@
 
 <!-- Add buttons here -->
 ![GitHub last commit](https://img.shields.io/github/last-commit/kathawala/expo-file-dl)
+![npm version](https://img.shields.io/npm/v/expo-file-dl)
+![npm bare version](https://img.shields.io/npm/v/expo-file-dl/bare)
+![npm downloads weekly](https://img.shields.io/npm/dw/expo-file-dl)
 
 <!-- Describe your project in brief -->
 A library which allows you to download files to an arbitrary folder on the mobile device while displaying notifications to the user about the status of the file download. Downloading files to a folder in Expo isn't super-obvious so this library is meant to bridge the gap a bit.
@@ -46,6 +49,8 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
 
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
+  - [Managed Expo project](#managed-expo-project)
+  - [Bare Expo project or plain React-Native project](#bare-expo-project-or-plain-react-native-project)
 - [Usage](#usage)
   - [downloadToFolder](#downloadtofolder)
 - [Development](#development)
