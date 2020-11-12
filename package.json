@@ -37,8 +37,8 @@
     "expo-media-library": "^9.2.1",
     "expo-notifications": "^0.7.2",
     "@unimodules/core": "^5.5.1",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
+    "react": "16.14.0",
+    "react-dom": "16.14.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.4.tar.gz",
     "react-native-web": "~0.13.12"
   },
