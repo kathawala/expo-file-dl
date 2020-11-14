@@ -17,6 +17,9 @@
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
   "funding": {
     "type": "individual",
     "url": "https://liberapay.com/kathawala/donate"
@@ -32,19 +35,24 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "expo": "~39.0.2",
     "expo-file-system": "^9.2.0",
     "expo-media-library": "^9.2.1",
     "expo-notifications": "^0.7.2",
+  },
+  "peerDependencies": {
+    "expo": "^39.0.2",
+    "react": "*",
+    "react-dom": "*",
+    "react-native": "*",
+    "react-native-web": "*"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.5",
+    "expo": "^39.0.4",
     "@unimodules/core": "^5.5.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.4.tar.gz",
     "react-native-web": "~0.13.12"
-  },
-  "peerDependencies": {
-  },
-  "devDependencies": {
-    "typescript": "^4.0.5"
   }
 }
