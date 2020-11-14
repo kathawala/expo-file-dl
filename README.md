@@ -73,14 +73,38 @@ yarn add expo-file-dl
 
 ## Bare Expo project or plain React-Native project
 
-First, install the following libraries in your project (follow the "Installation in bare React Native projects" instructions for each)
+First, you need to install `react-native-unimodules` if you haven't already.
+Follow [these instructions](https://docs.expo.io/bare/installing-unimodules/) to do so.
 
-* `expo-file-system`
-* `expo-media-library`
-* `expo-notifications`
-* `react-native-unimodules`
+Next, run the following command:
 
-then run
+`expo install expo-file-system expo-media-library expo-notifications`
+
+Then, add `android:requestLegacyExternalStorage="true"` to your `AndroidManifest.xml` like so
+
+```xml
+<manifest ... >
+  <application android:requestLegacyExternalStorage="true" ... >
+    ...
+  </application>
+</manifest>
+```
+
+Then add this to your `app.json` file
+
+```json
+{
+  "expo": {
+    ...
+    "android": {
+      ...
+      "useNextNotificationsApi": true,
+    }
+  }
+}
+```
+
+Finally, run
 
 ```
 yarn add expo-file-dl@bare
