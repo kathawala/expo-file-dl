@@ -1,6 +1,6 @@
 {
   "name": "expo-file-dl",
-  "version": "1.0.1-bare",
+  "version": "1.0.2-bare",
   "description": "Download files to a specified folder and notify the user while the download is happening and when the download finishes",
   "keywords": [
     "expo",
@@ -17,6 +17,9 @@
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
   "funding": {
     "type": "individual",
     "url": "https://liberapay.com/kathawala/donate"
