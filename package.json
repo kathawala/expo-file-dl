@@ -40,7 +40,7 @@
     "expo-notifications": "^0.7.2",
   },
   "peerDependencies": {
-    "expo": "^39.0.2",
+    "expo": "^39.0.4",
     "react": "*",
     "react-dom": "*",
     "react-native": "*",
