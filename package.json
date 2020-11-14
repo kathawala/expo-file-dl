@@ -1,6 +1,6 @@
 {
   "name": "expo-file-dl",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Download files to a specified folder and notify the user while the download is happening and when the download finishes",
   "keywords": [
     "expo",
@@ -32,12 +32,12 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "prepare": "npm run build"
+    "prepare": "yarn run build"
   },
   "dependencies": {
     "expo-file-system": "^9.2.0",
     "expo-media-library": "^9.2.1",
-    "expo-notifications": "^0.7.2",
+    "expo-notifications": "^0.7.2"
   },
   "peerDependencies": {
     "expo": "^39.0.4",
