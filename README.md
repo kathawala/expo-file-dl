@@ -7,7 +7,6 @@
 <!-- Add buttons here -->
 ![GitHub last commit](https://img.shields.io/github/last-commit/kathawala/expo-file-dl)
 ![npm version](https://img.shields.io/npm/v/expo-file-dl)
-![npm bare version](https://img.shields.io/npm/v/expo-file-dl/bare)
 ![npm downloads weekly](https://img.shields.io/npm/dw/expo-file-dl)
 
 <!-- Describe your project in brief -->
@@ -76,10 +75,6 @@ yarn add expo-file-dl
 First, you need to install `react-native-unimodules` if you haven't already.
 Follow [these instructions](https://docs.expo.io/bare/installing-unimodules/) to do so.
 
-Next, run the following command:
-
-`expo install expo-file-system expo-media-library expo-notifications`
-
 Then, add `android:requestLegacyExternalStorage="true"` to your `AndroidManifest.xml` like so
 
 ```xml
@@ -107,7 +102,7 @@ Then add this to your `app.json` file
 Finally, run
 
 ```
-yarn add expo-file-dl@bare
+yarn add expo-file-dl
 ```
 
 # Usage
