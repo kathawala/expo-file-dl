@@ -87,7 +87,7 @@ Then, add `android:requestLegacyExternalStorage="true"` to your `AndroidManifest
 
 Then add this to your `app.json` file
 
-```json
+```
 {
   "expo": {
     ...
@@ -120,7 +120,7 @@ To use the following functions, you need to have:
 
 ## downloadToFolder
 
-```
+```jsx
 import { downloadToFolder } from 'expo-file-dl';
 
 ...
