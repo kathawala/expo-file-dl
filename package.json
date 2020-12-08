@@ -37,7 +37,7 @@
   "dependencies": {
     "expo-file-system": "^9.2.0",
     "expo-media-library": "^9.2.1",
-    "expo-notifications": "^0.7.2"
+    "expo-notifications": "^0.8.0"
   },
   "peerDependencies": {
     "react": "*",
