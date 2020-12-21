@@ -36,7 +36,11 @@ function initBaseNotificationRequestInput(filename: string, channelId: string): 
       ...baseNotificationRequestInput.content,
       title: filename
     },
-    trigger: { channelId }
+    trigger: { 
+      channelId,
+      seconds: 1,
+      repeats: false
+    }
   };
   return baseNotificationRI;
 }
