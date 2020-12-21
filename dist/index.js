@@ -22,7 +22,11 @@ function initBaseNotificationRequestInput(filename, channelId) {
             ...baseNotificationRequestInput.content,
             title: filename
         },
-        trigger: { channelId }
+        trigger: {
+            channelId,
+            seconds: 1,
+            repeats: false
+        }
     };
     return baseNotificationRI;
 }
