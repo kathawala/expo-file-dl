@@ -1,46 +1,71 @@
-import * as FileSystem from 'expo-file-system';
-import * as Notifications from 'expo-notifications';
-import * as MediaLibrary from 'expo-media-library';
-import { AndroidNotificationPriority, ChannelAwareTriggerInput, NotificationContentInput, NotificationRequestInput } from 'expo-notifications';
+import * as FileSystem from "expo-file-system";
+import * as Notifications from "expo-notifications";
+import * as MediaLibrary from "expo-media-library";
+import * as Sharing from "expo-sharing";
+import {
+  AndroidNotificationPriority,
+  NotificationContentInput,
+  NotificationRequestInput,
+} from "expo-notifications";
+import { Platform } from "react-native";
+
+const ios = Platform.OS === "ios";
+const imageFileExts = [
+  "jpg",
+  "jpeg",
+  "tiff",
+  "tif",
+  "raw",
+  "dng",
+  "png",
+  "gif",
+  "bmp",
+  "heic",
+  "webp",
+];
 
 export type EFDL_NotificationType = {
-  notification: "managed" | "custom" | "none"
-}
+  notification: "managed" | "custom" | "none";
+};
 
 export type EDFL_NotificationContent = {
-  downloading: NotificationContentInput,
-  finished: NotificationContentInput,
-  error: NotificationContentInput
-}
+  downloading: NotificationContentInput;
+  finished: NotificationContentInput;
+  error: NotificationContentInput;
+};
 
 export type EDFL_NotificationState = "downloading" | "finished" | "error";
 
 const baseNotificationRequestInput: NotificationRequestInput = {
-  identifier: '',
+  identifier: "",
   content: {
-    title: '',
-    body: '',
+    title: "",
+    body: "",
     vibrate: [250],
     priority: AndroidNotificationPriority.HIGH,
-    sticky: false
+    autoDismiss: true,
+    sticky: false,
   },
   trigger: {
-    channelId: ''
-  }
+    channelId: "",
+  },
 };
 
-function initBaseNotificationRequestInput(filename: string, channelId: string): NotificationRequestInput {
+function initBaseNotificationRequestInput(
+  filename: string,
+  channelId: string
+): NotificationRequestInput {
   let baseNotificationRI = {
     ...baseNotificationRequestInput,
     content: {
       ...baseNotificationRequestInput.content,
-      title: filename
+      title: filename,
     },
-    trigger: { 
+    trigger: {
       channelId,
       seconds: 1,
-      repeats: false
-    }
+      repeats: false,
+    },
   };
   return baseNotificationRI;
 }
@@ -50,31 +75,28 @@ function getNotifParams(
   nState: EDFL_NotificationState,
   nContent?: EDFL_NotificationContent
 ): NotificationRequestInput {
-  let identifier = '';
-  let body = '';
+  let identifier = "";
+  let body = "";
   let sticky = false;
   let customNotifContent: NotificationContentInput = {};
   switch (nState) {
-    case 'downloading':
+    case "downloading":
       identifier = `dl${baseNotificationRI.content.title}`;
-      body = 'Downloading...';
+      body = "Downloading...";
       sticky = true;
-      if (nContent !== undefined)
-        customNotifContent = nContent.downloading;
+      if (nContent !== undefined) customNotifContent = nContent.downloading;
       break;
-    case 'finished':
+    case "finished":
       identifier = `fin${baseNotificationRI.content.title}`;
-      body = 'Completed!';
+      body = "Completed!";
       sticky = false;
-      if (nContent !== undefined)
-        customNotifContent = nContent.finished;
+      if (nContent !== undefined) customNotifContent = nContent.finished;
       break;
-    case 'error':
+    case "error":
       identifier = `err${baseNotificationRI.content.title}`;
-      body = 'Failed to download';
+      body = "Failed to download";
       sticky = false;
-      if (nContent !== undefined)
-        customNotifContent = nContent.error;
+      if (nContent !== undefined) customNotifContent = nContent.error;
       break;
     default:
       break;
@@ -87,12 +109,15 @@ function getNotifParams(
       ...baseNotificationRI.content,
       body,
       sticky,
-      ...customNotifContent
-    }
+      ...customNotifContent,
+    },
   };
 }
 
-async function dismissAndShowErr(notifToDismissId: string | undefined, errNotificationRI: NotificationRequestInput): Promise<void> {
+async function dismissAndShowErr(
+  notifToDismissId: string | undefined,
+  errNotificationRI: NotificationRequestInput
+): Promise<void> {
   if (notifToDismissId !== undefined) {
     await Notifications.dismissNotificationAsync(notifToDismissId);
   }
@@ -102,7 +127,7 @@ async function dismissAndShowErr(notifToDismissId: string | undefined, errNotifi
 
 // NOTE: This function assumes permissions have been granted and does not
 // take responsibilty for whether permissions are granted or not
-// IT WILL SILENTLY FAIL IF YOU DON'T REQUEST AND GET CAMERA_ROLL permissions
+// IT WILL SILENTLY FAIL IF YOU DON'T REQUEST AND GET MEDIA_LIBRARY permissions
 export async function downloadToFolder(
   uri: string,
   filename: string,
@@ -111,18 +136,40 @@ export async function downloadToFolder(
   notificationType?: EFDL_NotificationType,
   notificationContent?: EDFL_NotificationContent
 ): Promise<boolean> {
-  let baseNotificationRI: NotificationRequestInput = initBaseNotificationRequestInput(filename, channelId);
-  const customNotifContent = notificationType && notificationType.notification === 'custom' ? notificationContent : undefined;
-  const skipNotifications = notificationType && notificationType.notification === 'none';
-  const dlNotificationRI: NotificationRequestInput = getNotifParams(baseNotificationRI, "downloading", customNotifContent);
-  const errNotificationRI: NotificationRequestInput = getNotifParams(baseNotificationRI, "error", customNotifContent);
-  const finNotificationRI: NotificationRequestInput = getNotifParams(baseNotificationRI, "finished", customNotifContent);  
+  let baseNotificationRI: NotificationRequestInput = initBaseNotificationRequestInput(
+    filename,
+    channelId
+  );
+  const customNotifContent =
+    notificationType && notificationType.notification === "custom"
+      ? notificationContent
+      : undefined;
+  const skipNotifications =
+    notificationType && notificationType.notification === "none";
+  const dlNotificationRI: NotificationRequestInput = getNotifParams(
+    baseNotificationRI,
+    "downloading",
+    customNotifContent
+  );
+  const errNotificationRI: NotificationRequestInput = getNotifParams(
+    baseNotificationRI,
+    "error",
+    customNotifContent
+  );
+  const finNotificationRI: NotificationRequestInput = getNotifParams(
+    baseNotificationRI,
+    "finished",
+    customNotifContent
+  );
 
   if (!skipNotifications)
     await Notifications.scheduleNotificationAsync(dlNotificationRI);
 
   const fileUri: string = `${FileSystem.documentDirectory}${filename}`;
-  const downloadedFile: FileSystem.FileSystemDownloadResult = await FileSystem.downloadAsync(uri, fileUri);
+  const downloadedFile: FileSystem.FileSystemDownloadResult = await FileSystem.downloadAsync(
+    uri,
+    fileUri
+  );
 
   if (downloadedFile.status != 200) {
     if (!skipNotifications)
@@ -131,6 +178,23 @@ export async function downloadToFolder(
   }
 
   try {
+    // if this is not an image file on iOS
+    // we use "Sharing" library and quit early (let iOS handle it)
+    if (
+      ios &&
+      imageFileExts.every(
+        (x) => !downloadedFile.uri.toLocaleLowerCase().endsWith(x)
+      )
+    ) {
+      const UTI = "public.item";
+      const shareResult = await Sharing.shareAsync(downloadedFile.uri, {
+        UTI,
+      });
+      return true;
+    }
+
+    // the file is either a photo on iOS or any file type on Android
+    // in which case we can download the file directly to the Download folder
     const asset = await MediaLibrary.createAssetAsync(downloadedFile.uri);
     const album = await MediaLibrary.getAlbumAsync(folder);
     if (album == null) {
@@ -139,6 +203,7 @@ export async function downloadToFolder(
       await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
     }
   } catch (e) {
+    console.log(`ERROR: ${e}`);
     if (!skipNotifications)
       await dismissAndShowErr(dlNotificationRI.identifier, errNotificationRI);
     return false;
@@ -151,6 +216,6 @@ export async function downloadToFolder(
       await Notifications.dismissNotificationAsync(dlNotificationRI.identifier);
     }
     await Notifications.scheduleNotificationAsync(finNotificationRI);
-    return true;  
+    return true;
   }
 }

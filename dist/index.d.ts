@@ -1,4 +1,4 @@
-import { NotificationContentInput } from 'expo-notifications';
+import { NotificationContentInput } from "expo-notifications";
 export declare type EFDL_NotificationType = {
     notification: "managed" | "custom" | "none";
 };

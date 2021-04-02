@@ -35,9 +35,10 @@
     "prepare": "yarn run build"
   },
   "dependencies": {
-    "expo-file-system": "^9.2.0",
-    "expo-media-library": "^9.2.1",
-    "expo-notifications": "^0.7.2"
+    "expo-file-system": "^10.0.0",
+    "expo-media-library": "^11.0.0",
+    "expo-notifications": "^0.9.0",
+    "expo-sharing": "^9.0.0"
   },
   "peerDependencies": {
     "react": "*",

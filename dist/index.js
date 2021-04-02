@@ -1,58 +1,75 @@
-import * as FileSystem from 'expo-file-system';
-import * as Notifications from 'expo-notifications';
-import * as MediaLibrary from 'expo-media-library';
-import { AndroidNotificationPriority } from 'expo-notifications';
+import * as FileSystem from "expo-file-system";
+import * as Notifications from "expo-notifications";
+import * as MediaLibrary from "expo-media-library";
+import * as Sharing from "expo-sharing";
+import { AndroidNotificationPriority, } from "expo-notifications";
+import { Platform } from "react-native";
+const ios = Platform.OS === "ios";
+const imageFileExts = [
+    "jpg",
+    "jpeg",
+    "tiff",
+    "tif",
+    "raw",
+    "dng",
+    "png",
+    "gif",
+    "bmp",
+    "heic",
+    "webp",
+];
 const baseNotificationRequestInput = {
-    identifier: '',
+    identifier: "",
     content: {
-        title: '',
-        body: '',
+        title: "",
+        body: "",
         vibrate: [250],
         priority: AndroidNotificationPriority.HIGH,
-        sticky: false
+        autoDismiss: true,
+        sticky: false,
     },
     trigger: {
-        channelId: ''
-    }
+        channelId: "",
+    },
 };
 function initBaseNotificationRequestInput(filename, channelId) {
     let baseNotificationRI = {
         ...baseNotificationRequestInput,
         content: {
             ...baseNotificationRequestInput.content,
-            title: filename
+            title: filename,
         },
         trigger: {
             channelId,
             seconds: 1,
-            repeats: false
-        }
+            repeats: false,
+        },
     };
     return baseNotificationRI;
 }
 function getNotifParams(baseNotificationRI, nState, nContent) {
-    let identifier = '';
-    let body = '';
+    let identifier = "";
+    let body = "";
     let sticky = false;
     let customNotifContent = {};
     switch (nState) {
-        case 'downloading':
+        case "downloading":
             identifier = `dl${baseNotificationRI.content.title}`;
-            body = 'Downloading...';
+            body = "Downloading...";
             sticky = true;
             if (nContent !== undefined)
                 customNotifContent = nContent.downloading;
             break;
-        case 'finished':
+        case "finished":
             identifier = `fin${baseNotificationRI.content.title}`;
-            body = 'Completed!';
+            body = "Completed!";
             sticky = false;
             if (nContent !== undefined)
                 customNotifContent = nContent.finished;
             break;
-        case 'error':
+        case "error":
             identifier = `err${baseNotificationRI.content.title}`;
-            body = 'Failed to download';
+            body = "Failed to download";
             sticky = false;
             if (nContent !== undefined)
                 customNotifContent = nContent.error;
@@ -67,8 +84,8 @@ function getNotifParams(baseNotificationRI, nState, nContent) {
             ...baseNotificationRI.content,
             body,
             sticky,
-            ...customNotifContent
-        }
+            ...customNotifContent,
+        },
     };
 }
 async function dismissAndShowErr(notifToDismissId, errNotificationRI) {
@@ -80,11 +97,13 @@ async function dismissAndShowErr(notifToDismissId, errNotificationRI) {
 }
 // NOTE: This function assumes permissions have been granted and does not
 // take responsibilty for whether permissions are granted or not
-// IT WILL SILENTLY FAIL IF YOU DON'T REQUEST AND GET CAMERA_ROLL permissions
+// IT WILL SILENTLY FAIL IF YOU DON'T REQUEST AND GET MEDIA_LIBRARY permissions
 export async function downloadToFolder(uri, filename, folder, channelId, notificationType, notificationContent) {
     let baseNotificationRI = initBaseNotificationRequestInput(filename, channelId);
-    const customNotifContent = notificationType && notificationType.notification === 'custom' ? notificationContent : undefined;
-    const skipNotifications = notificationType && notificationType.notification === 'none';
+    const customNotifContent = notificationType && notificationType.notification === "custom"
+        ? notificationContent
+        : undefined;
+    const skipNotifications = notificationType && notificationType.notification === "none";
     const dlNotificationRI = getNotifParams(baseNotificationRI, "downloading", customNotifContent);
     const errNotificationRI = getNotifParams(baseNotificationRI, "error", customNotifContent);
     const finNotificationRI = getNotifParams(baseNotificationRI, "finished", customNotifContent);
@@ -98,6 +117,18 @@ export async function downloadToFolder(uri, filename, folder, channelId, notific
         return false;
     }
     try {
+        // if this is not an image file on iOS
+        // we use "Sharing" library and quit early (let iOS handle it)
+        if (ios &&
+            imageFileExts.every((x) => !downloadedFile.uri.toLocaleLowerCase().endsWith(x))) {
+            const UTI = "public.item";
+            const shareResult = await Sharing.shareAsync(downloadedFile.uri, {
+                UTI,
+            });
+            return true;
+        }
+        // the file is either a photo on iOS or any file type on Android
+        // in which case we can download the file directly to the Download folder
         const asset = await MediaLibrary.createAssetAsync(downloadedFile.uri);
         const album = await MediaLibrary.getAlbumAsync(folder);
         if (album == null) {
@@ -108,6 +139,7 @@ export async function downloadToFolder(uri, filename, folder, channelId, notific
         }
     }
     catch (e) {
+        console.log(`ERROR: ${e}`);
         if (!skipNotifications)
             await dismissAndShowErr(dlNotificationRI.identifier, errNotificationRI);
         return false;
