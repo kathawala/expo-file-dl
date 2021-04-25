@@ -95,22 +95,35 @@ async function dismissAndShowErr(notifToDismissId, errNotificationRI) {
     await Notifications.scheduleNotificationAsync(errNotificationRI);
     return;
 }
+async function downloadFile(uri, fileUri, downloadProgressCallback) {
+    if (downloadProgressCallback) {
+        const downloadResumable = FileSystem.createDownloadResumable(uri, fileUri, {}, downloadProgressCallback);
+        return await downloadResumable.downloadAsync();
+    }
+    else {
+        return await FileSystem.downloadAsync(uri, fileUri);
+    }
+}
 // NOTE: This function assumes permissions have been granted and does not
 // take responsibilty for whether permissions are granted or not
 // IT WILL SILENTLY FAIL IF YOU DON'T REQUEST AND GET MEDIA_LIBRARY permissions
-export async function downloadToFolder(uri, filename, folder, channelId, notificationType, notificationContent) {
+export async function downloadToFolder(uri, filename, folder, channelId, options) {
     let baseNotificationRI = initBaseNotificationRequestInput(filename, channelId);
-    const customNotifContent = notificationType && notificationType.notification === "custom"
-        ? notificationContent
+    const customNotifContent = options &&
+        options.notificationType &&
+        options.notificationType.notification === "custom"
+        ? options.notificationContent
         : undefined;
-    const skipNotifications = notificationType && notificationType.notification === "none";
+    const skipNotifications = options &&
+        options.notificationType &&
+        options.notificationType.notification === "none";
     const dlNotificationRI = getNotifParams(baseNotificationRI, "downloading", customNotifContent);
     const errNotificationRI = getNotifParams(baseNotificationRI, "error", customNotifContent);
     const finNotificationRI = getNotifParams(baseNotificationRI, "finished", customNotifContent);
     if (!skipNotifications)
         await Notifications.scheduleNotificationAsync(dlNotificationRI);
     const fileUri = `${FileSystem.documentDirectory}${filename}`;
-    const downloadedFile = await FileSystem.downloadAsync(uri, fileUri);
+    const downloadedFile = await downloadFile(uri, fileUri, options?.downloadProgressCallback);
     if (downloadedFile.status != 200) {
         if (!skipNotifications)
             await dismissAndShowErr(dlNotificationRI.identifier, errNotificationRI);

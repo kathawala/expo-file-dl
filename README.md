@@ -10,7 +10,7 @@
 ![npm downloads weekly](https://img.shields.io/npm/dw/expo-file-dl)
 
 <!-- Describe your project in brief -->
-A library which allows you to download files to an arbitrary folder on the mobile device while displaying notifications to the user about the status of the file download. Downloading files to a folder in Expo isn't super-obvious so this library is meant to bridge the gap a bit.
+A library which allows you to download files to an arbitrary folder on the mobile device while updating you on the download progress and displaying notifications to the user about the status of the file download. Downloading files to a folder in Expo isn't super-obvious so this library is meant to bridge the gap a bit.
 To use this library you need to be using `expo-notifications` (bare and managed workflow both supported) and need to have the following in your app:
 
 1. An existing notification channel
@@ -120,6 +120,8 @@ To use the following functions, you need to have:
 
 ## downloadToFolder
 
+simplest invocation
+
 ```jsx
 import { downloadToFolder } from 'expo-file-dl';
 
@@ -131,13 +133,52 @@ import { downloadToFolder } from 'expo-file-dl';
 
 ```
 
+with configuration options
+
+```jsx
+import { downloadToFolder } from 'expo-file-dl';
+
+...
+
+      <Button title='Download' onPress={async () => {
+        await downloadToFolder(
+          uri,
+          filename,
+          folder,
+          channelId,
+          {
+            notificationType: {notification: 'custom'},
+            notificationContent: {
+              downloading: {
+                title: 'Download In Progress',
+              },
+              finished: {
+                title: 'Complete!',
+              },
+              error: {
+                title: 'Oops!'
+              },
+            },
+            downloadProgressCallback: (data) => {
+              const {totalBytesWritten, totalBytesExpectedToWrite} = data;
+              const pctg = 100 * (totalBytesWritten / totalBytesExpectedToWrite);
+              setProgressPercentage(`${pctg.toFixed(0)}%`);
+            },
+          }
+        );
+      }}
+
+```
+
 Arguments:
 * `uri`: `string` - the URI of the resource you want to download, currently handles images, videos, and audio well, unsure about other types of resources
 * `filename`: `string` - the filename to save the resource to (only the filename, no path information)
 * `folder`: `string` - the name of the folder on the device to save the resource to, if the folder does not exist it will be created
 * `channelId`: `string` - the id of the NotificationChannel you created earlier
-* `notificationType`?: `{ notification: "managed" | "custom" | "none" }` - Optional argument. The managed type uses set defaults for any and all notifications sent during file download. You can override these defaults with `{ notification: "custom" }` and you can opt out of sending notifications altogether with `{ notification: "none" }`
-* `notificationContent`?: `{ downloading: NotificationContentInput, finished: NotificationContentInput, error: NotificationContentInput }` - Optional argument, only looked at if `notificationType` is set to `{ notification: "custom" }` otherwise it is ignored. See the [docs](https://docs.expo.io/versions/v39.0.0/sdk/notifications/#notificationcontentinput) for `NotificationContentInput` to see what options are available to customize
+* `options`: `object` - Optional argument. an object containing any (or none) of the following configurable options:
+  * `notificationType`?: `{ notification: "managed" | "custom" | "none" }` - Optional argument. The managed type uses set defaults for any and all notifications sent during file download. You can override these defaults with `{ notification: "custom" }` and you can opt out of sending notifications altogether with `{ notification: "none" }`
+  * `notificationContent`?: `{ downloading: NotificationContentInput, finished: NotificationContentInput, error: NotificationContentInput }` - Optional argument, only looked at if `notificationType` is set to `{ notification: "custom" }` otherwise it is ignored. See the [docs](https://docs.expo.io/versions/v39.0.0/sdk/notifications/#notificationcontentinput) for `NotificationContentInput` to see what options are available to customize
+  * `downloadProgressCallback`?: `({totalBytesWritten: number, totalBytesExpectedToWrite: number}) => void` - Optional argument, gets called on every file write to the system with information about how much of the file has been written and how much is left to write.
 
 This function will download a file from the given URI to a file in the folder with the given name (and will create a folder with the given name if none currently exists). This downloaded file will be visible from other apps, including multimedia apps and file managers. While the download is occurring the user will receive status notifications.
 

@@ -34,6 +34,12 @@ export type EDFL_NotificationContent = {
   error: NotificationContentInput;
 };
 
+export interface EFDL_Options {
+  notificationType?: EFDL_NotificationType;
+  notificationContent?: EDFL_NotificationContent;
+  downloadProgressCallback?: FileSystem.DownloadProgressCallback;
+}
+
 export type EDFL_NotificationState = "downloading" | "finished" | "error";
 
 const baseNotificationRequestInput: NotificationRequestInput = {
@@ -125,6 +131,24 @@ async function dismissAndShowErr(
   return;
 }
 
+async function downloadFile(
+  uri: string,
+  fileUri: string,
+  downloadProgressCallback?: FileSystem.DownloadProgressCallback
+) {
+  if (downloadProgressCallback) {
+    const downloadResumable = FileSystem.createDownloadResumable(
+      uri,
+      fileUri,
+      {},
+      downloadProgressCallback!
+    );
+    return await downloadResumable.downloadAsync();
+  } else {
+    return await FileSystem.downloadAsync(uri, fileUri);
+  }
+}
+
 // NOTE: This function assumes permissions have been granted and does not
 // take responsibilty for whether permissions are granted or not
 // IT WILL SILENTLY FAIL IF YOU DON'T REQUEST AND GET MEDIA_LIBRARY permissions
@@ -133,19 +157,22 @@ export async function downloadToFolder(
   filename: string,
   folder: string,
   channelId: string,
-  notificationType?: EFDL_NotificationType,
-  notificationContent?: EDFL_NotificationContent
+  options?: EFDL_Options
 ): Promise<boolean> {
   let baseNotificationRI: NotificationRequestInput = initBaseNotificationRequestInput(
     filename,
     channelId
   );
   const customNotifContent =
-    notificationType && notificationType.notification === "custom"
-      ? notificationContent
+    options &&
+    options.notificationType &&
+    options.notificationType.notification === "custom"
+      ? options.notificationContent
       : undefined;
   const skipNotifications =
-    notificationType && notificationType.notification === "none";
+    options &&
+    options.notificationType &&
+    options.notificationType.notification === "none";
   const dlNotificationRI: NotificationRequestInput = getNotifParams(
     baseNotificationRI,
     "downloading",
@@ -166,9 +193,10 @@ export async function downloadToFolder(
     await Notifications.scheduleNotificationAsync(dlNotificationRI);
 
   const fileUri: string = `${FileSystem.documentDirectory}${filename}`;
-  const downloadedFile: FileSystem.FileSystemDownloadResult = await FileSystem.downloadAsync(
+  const downloadedFile: FileSystem.FileSystemDownloadResult = await downloadFile(
     uri,
-    fileUri
+    fileUri,
+    options?.downloadProgressCallback
   );
 
   if (downloadedFile.status != 200) {
