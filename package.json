@@ -1,6 +1,6 @@
 {
   "name": "expo-file-dl",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Download files to a specified folder and notify the user while the download is happening and when the download finishes",
   "keywords": [
     "expo",
