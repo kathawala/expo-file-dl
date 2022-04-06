@@ -15,11 +15,8 @@
     "url": "https://github.com/kathawala/expo-file-dl/issues",
     "email": "farhansayshi@gmail.com"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist/**/*"
-  ],
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "funding": {
     "type": "individual",
     "url": "https://liberapay.com/kathawala/donate"
@@ -31,23 +28,28 @@
   "author": "Farhan Kathawala <farhansayshi@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
-    "prepare": "yarn run build"
+    "build": "expo-module build",
+    "clean": "expo-module clean",
+    "lint": "expo-module lint",
+    "test": "expo-module test",
+    "prepare": "expo-module prepare",
+    "prepublishOnly": "expo-module prepublishOnly",
+    "expo-module": "expo-module"
   },
   "dependencies": {
-    "expo-file-system": "^10.0.0",
-    "expo-media-library": "^11.0.0",
-    "expo-notifications": "^0.9.0",
-    "expo-sharing": "^9.0.0"
+    "expo-file-system": "^13.1.4",
+    "expo-media-library": "^14.0.1",
+    "expo-notifications": "^0.14.1",
+    "expo-sharing": "^10.1.1"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
   },
   "devDependencies": {
-    "@types/react": "^16.9.56",
-    "@types/react-native": "^0.63.35",
-    "react-native-unimodules": "^0.11.0",
-    "typescript": "^4.0.5"
+    "@types/react": "^17.0.42",
+    "@types/react-native": "^0.67.3",
+    "expo-module-scripts": "^2.0.0",
+    "typescript": "^4.6.2"
   }
 }

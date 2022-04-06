@@ -1,0 +1,4 @@
+{
+  "name": "expo-file-dl",
+  "platforms": ["ios", "android"]
+}

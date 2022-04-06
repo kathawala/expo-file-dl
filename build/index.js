@@ -124,7 +124,7 @@ export async function downloadToFolder(uri, filename, folder, channelId, options
         await Notifications.scheduleNotificationAsync(dlNotificationRI);
     const fileUri = `${FileSystem.documentDirectory}${filename}`;
     const downloadedFile = await downloadFile(uri, fileUri, options?.downloadProgressCallback);
-    if (downloadedFile.status != 200) {
+    if (!downloadedFile || downloadedFile.status != 200) {
         if (!skipNotifications)
             await dismissAndShowErr(dlNotificationRI.identifier, errNotificationRI);
         return false;

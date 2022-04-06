@@ -193,13 +193,13 @@ export async function downloadToFolder(
     await Notifications.scheduleNotificationAsync(dlNotificationRI);
 
   const fileUri: string = `${FileSystem.documentDirectory}${filename}`;
-  const downloadedFile: FileSystem.FileSystemDownloadResult = await downloadFile(
+  const downloadedFile: FileSystem.FileSystemDownloadResult | undefined = await downloadFile(
     uri,
     fileUri,
     options?.downloadProgressCallback
   );
 
-  if (downloadedFile.status != 200) {
+  if (!downloadedFile || downloadedFile.status != 200) {
     if (!skipNotifications)
       await dismissAndShowErr(dlNotificationRI.identifier, errNotificationRI);
     return false;
